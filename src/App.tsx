@@ -8,10 +8,11 @@ import { Standings } from './components/Standings'
 import { AdminLogin } from './components/admin/AdminLogin'
 import { ManageParticipants } from './components/admin/ManageParticipants'
 import { EnterResults } from './components/admin/EnterResults'
+import { AdminPredictions } from './components/admin/AdminPredictions'
 import { BolaIcon } from './components/BolaIcon'
 
 type Tab = 'palpites' | 'artilheiro' | 'classificacao'
-type AdminTab = 'apostadores' | 'resultados'
+type AdminTab = 'apostadores' | 'palpites' | 'resultados'
 
 export default function App() {
   const [participant, setParticipant] = useState<Participant | null>(currentParticipant())
@@ -31,13 +32,15 @@ export default function App() {
           </button>
         </div>
         <div className="admin-tabs">
-          {(['apostadores', 'resultados'] as const).map(t => (
+          {(['apostadores', 'palpites', 'resultados'] as const).map(t => (
             <button key={t} onClick={() => setAdminTab(t)} className={`admin-tab${adminTab === t ? ' ativa' : ''}`}>
-              {{ apostadores: '👥 Apostadores', resultados: '⚽ Resultados' }[t]}
+              {{ apostadores: '👥 Apostadores', palpites: '📝 Palpites', resultados: '⚽ Resultados' }[t]}
             </button>
           ))}
         </div>
-        {adminTab === 'apostadores' ? <ManageParticipants /> : <EnterResults />}
+        {adminTab === 'apostadores' && <ManageParticipants />}
+        {adminTab === 'palpites' && <AdminPredictions />}
+        {adminTab === 'resultados' && <EnterResults />}
       </div>
     )
   }
