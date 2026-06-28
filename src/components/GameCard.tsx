@@ -22,6 +22,10 @@ export function GameCard({ game, prediction, participantId, semiLosers }: Props)
   const locked = travaEspecial
     ? Date.now() >= new Date(travaEspecial).getTime()
     : isGameLocked(game.date, new Date())
+
+  // Na rodada de 32 o apostador dá o placar. A partir das oitavas, só escolhe quem avança.
+  const soAvanca = game.phase !== 'rodada32'
+
   const [homeScore, setHomeScore] = useState(prediction?.homeScore ?? 0)
   const [awayScore, setAwayScore] = useState(prediction?.awayScore ?? 0)
   const [advanceTeam, setAdvanceTeam] = useState<string>(prediction?.advanceTeam ?? '')
@@ -40,31 +44,48 @@ export function GameCard({ game, prediction, participantId, semiLosers }: Props)
 
   return (
     <div className={`jogo-card${locked ? ' travado' : ''}`}>
-      <div className="jogo-confronto">
-        {/* Time mandante */}
-        <div className="jogo-lado">
-          <div className="jogo-time-nome">{homeTeam}</div>
-          <ScoreStepper value={homeScore} onChange={handleHomeScore} disabled={locked} />
-        </div>
-
-        <span className="vs">VS</span>
-
-        {/* Time visitante */}
-        <div className="jogo-lado">
-          <div className="jogo-time-nome">{awayTeam}</div>
-          <ScoreStepper value={awayScore} onChange={handleAwayScore} disabled={locked} />
-        </div>
-      </div>
-
-      {isDraw && !locked && (
-        <div className="avanca-linha">
-          <span>Quem avança?</span>
-          <select className="avanca-select" value={advanceTeam} onChange={e => handleAdvance(e.target.value)}>
-            <option value="">— escolha —</option>
-            <option value={homeTeam}>{homeTeam}</option>
-            <option value={awayTeam}>{awayTeam}</option>
-          </select>
-        </div>
+      {soAvanca ? (
+        /* ── Oitavas em diante: escolhe só quem avança ── */
+        <>
+          <div className="jogo-confronto">
+            <div className="jogo-lado"><div className="jogo-time-nome">{homeTeam}</div></div>
+            <span className="vs">VS</span>
+            <div className="jogo-lado"><div className="jogo-time-nome">{awayTeam}</div></div>
+          </div>
+          <div className="avanca-linha">
+            <span>Quem avança?</span>
+            <select className="avanca-select" value={advanceTeam} onChange={e => handleAdvance(e.target.value)} disabled={locked}>
+              <option value="">— escolha —</option>
+              <option value={homeTeam}>{homeTeam}</option>
+              <option value={awayTeam}>{awayTeam}</option>
+            </select>
+          </div>
+        </>
+      ) : (
+        /* ── Rodada de 32: dá o placar ── */
+        <>
+          <div className="jogo-confronto">
+            <div className="jogo-lado">
+              <div className="jogo-time-nome">{homeTeam}</div>
+              <ScoreStepper value={homeScore} onChange={handleHomeScore} disabled={locked} />
+            </div>
+            <span className="vs">VS</span>
+            <div className="jogo-lado">
+              <div className="jogo-time-nome">{awayTeam}</div>
+              <ScoreStepper value={awayScore} onChange={handleAwayScore} disabled={locked} />
+            </div>
+          </div>
+          {isDraw && !locked && (
+            <div className="avanca-linha">
+              <span>Quem avança?</span>
+              <select className="avanca-select" value={advanceTeam} onChange={e => handleAdvance(e.target.value)}>
+                <option value="">— escolha —</option>
+                <option value={homeTeam}>{homeTeam}</option>
+                <option value={awayTeam}>{awayTeam}</option>
+              </select>
+            </div>
+          )}
+        </>
       )}
 
       <div className="jogo-data" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
