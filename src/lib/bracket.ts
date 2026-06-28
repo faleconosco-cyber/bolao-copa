@@ -11,7 +11,7 @@ export function fillBracket(games: Game[], preds: Prediction[]): Game[] {
   const byId = new Map(games.map(g => [g.id, { ...g }]))
   const predByGame = new Map(preds.map(p => [p.gameId, p]))
 
-  const order: Game['phase'][] = ['oitavas', 'quartas', 'semis', 'terceiro', 'final']
+  const order: Game['phase'][] = ['rodada32', 'oitavas', 'quartas', 'semis', 'terceiro', 'final']
   for (const phase of order) {
     for (const g of byId.values()) {
       if (g.phase !== phase) continue

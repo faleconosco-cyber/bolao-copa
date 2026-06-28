@@ -28,8 +28,8 @@ export function EnterResults() {
 
   if (loading) return <p style={{ padding: 24, color: 'var(--texto-dim)' }}>Carregando...</p>
 
-  const phases = ['oitavas', 'quartas', 'semis', 'terceiro', 'final'] as const
-  const phaseLabel = { oitavas: 'Oitavas', quartas: 'Quartas', semis: 'Semifinais', terceiro: '3º Lugar', final: 'Final' }
+  const phases = ['rodada32', 'oitavas', 'quartas', 'semis', 'terceiro', 'final'] as const
+  const phaseLabel = { rodada32: 'Rodada de 32', oitavas: 'Oitavas', quartas: 'Quartas', semis: 'Semifinais', terceiro: '3º Lugar', final: 'Final' }
 
   return (
     <div className="conteudo">

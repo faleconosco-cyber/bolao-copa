@@ -7,6 +7,7 @@ import { GameCard } from './GameCard'
 interface Props { participantId: string }
 
 const PHASE_LABELS: Record<string, string> = {
+  rodada32: 'Rodada de 32',
   oitavas: 'Oitavas de Final',
   quartas: 'Quartas de Final',
   semis: 'Semifinais',
@@ -32,16 +33,16 @@ export function MyPredictions({ participantId }: Props) {
   const filled = fillBracket(games, predictions)
   const predMap = new Map(predictions.map(p => [p.gameId, p]))
 
-  const g13 = filled.find(g => g.id === 'G13')
-  const g14 = filled.find(g => g.id === 'G14')
-  const p13 = predMap.get('G13')
-  const p14 = predMap.get('G14')
-  const winner13 = g13 ? advancingTeam(g13, p13) : null
-  const winner14 = g14 ? advancingTeam(g14, p14) : null
-  const loser13 = g13 && winner13 ? (winner13 === g13.homeTeam ? g13.awayTeam : g13.homeTeam) : null
-  const loser14 = g14 && winner14 ? (winner14 === g14.homeTeam ? g14.awayTeam : g14.homeTeam) : null
+  const semi1 = filled.find(g => g.id === 'G101')
+  const semi2 = filled.find(g => g.id === 'G102')
+  const pSemi1 = predMap.get('G101')
+  const pSemi2 = predMap.get('G102')
+  const winnerSemi1 = semi1 ? advancingTeam(semi1, pSemi1) : null
+  const winnerSemi2 = semi2 ? advancingTeam(semi2, pSemi2) : null
+  const loser1 = semi1 && winnerSemi1 ? (winnerSemi1 === semi1.homeTeam ? semi1.awayTeam : semi1.homeTeam) : null
+  const loser2 = semi2 && winnerSemi2 ? (winnerSemi2 === semi2.homeTeam ? semi2.awayTeam : semi2.homeTeam) : null
 
-  const phases: Game['phase'][] = ['oitavas', 'quartas', 'semis', 'terceiro', 'final']
+  const phases: Game['phase'][] = ['rodada32', 'oitavas', 'quartas', 'semis', 'terceiro', 'final']
 
   return (
     <div>
@@ -57,7 +58,7 @@ export function MyPredictions({ participantId }: Props) {
                 game={game}
                 prediction={predMap.get(game.id)}
                 participantId={participantId}
-                semiLosers={game.phase === 'terceiro' ? [loser13, loser14] : undefined}
+                semiLosers={game.phase === 'terceiro' ? [loser1, loser2] : undefined}
               />
             ))}
           </div>

@@ -12,8 +12,8 @@ export function Artilheiro({ participantId }: Props) {
 
   useEffect(() => {
     Promise.all([getGames(), getArtilheiroPrediction(participantId)]).then(([games, pred]) => {
-      const firstOitavas = games.filter(g => g.phase === 'oitavas').sort((a, b) => a.order - b.order)[0]
-      if (firstOitavas) setLocked(isArtilheiroLocked(firstOitavas.date, new Date()))
+      const firstGame = [...games].sort((a, b) => a.date.localeCompare(b.date))[0]
+      if (firstGame) setLocked(isArtilheiroLocked(firstGame.date, new Date()))
       if (pred) { setPlayer(pred); setSaved(pred) }
       setLoading(false)
     })
@@ -32,7 +32,7 @@ export function Artilheiro({ participantId }: Props) {
       <div className="artilheiro-card">
         <div className="artilheiro-titulo">Artilheiro da Copa</div>
         <div className="artilheiro-desc">
-          Acertar o artilheiro vale <strong style={{ color: 'var(--amarelo)' }}>+20 pontos</strong>. Trava junto com o primeiro jogo das oitavas.
+          Acertar o artilheiro vale <strong style={{ color: 'var(--amarelo)' }}>+20 pontos</strong>. Trava junto com o primeiro jogo do mata-mata.
         </div>
 
         {locked ? (

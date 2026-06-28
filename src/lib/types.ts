@@ -1,4 +1,4 @@
-export type Phase = 'oitavas' | 'quartas' | 'semis' | 'terceiro' | 'final'
+export type Phase = 'rodada32' | 'oitavas' | 'quartas' | 'semis' | 'terceiro' | 'final'
 
 export interface Game {
   id: string
