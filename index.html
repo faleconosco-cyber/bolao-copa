@@ -1,10 +1,468 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>bolao-temp2</title>
+    <title>Bolão Copa 2026 🇧🇷</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --verde: #009c3b;
+        --verde-escuro: #007a2e;
+        --verde-claro: #00c44f;
+        --amarelo: #FFDF00;
+        --amarelo-escuro: #e6c800;
+        --azul: #002776;
+        --branco: #ffffff;
+        --cinza-claro: #f5f5f0;
+        --cinza: #e8e8e0;
+        --cinza-medio: #a0a090;
+        --texto: #1a1a1a;
+        --sombra: 0 4px 24px rgba(0,0,0,0.12);
+        --sombra-forte: 0 8px 40px rgba(0,0,0,0.18);
+        --raio: 16px;
+        --raio-sm: 8px;
+      }
+
+      body {
+        font-family: 'Nunito', sans-serif;
+        background: var(--cinza-claro);
+        color: var(--texto);
+        min-height: 100vh;
+      }
+
+      h1, h2, h3, .titulo {
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 1px;
+      }
+
+      button {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s ease;
+      }
+
+      button:hover:not(:disabled) { transform: translateY(-1px); }
+      button:active:not(:disabled) { transform: translateY(0); }
+      button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      input, select {
+        font-family: 'Nunito', sans-serif;
+      }
+
+      /* Bola decorativa */
+      .bola {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, var(--amarelo), #b8a000);
+        border: 4px solid var(--verde);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25), inset 0 -4px 8px rgba(0,0,0,0.15);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .bola::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: var(--verde);
+        border-radius: 50%;
+        top: 12px;
+        left: 12px;
+        box-shadow: 16px 6px 0 var(--verde), -4px 18px 0 var(--verde), 28px 18px 0 var(--verde);
+      }
+
+      /* Header */
+      .header {
+        background: var(--verde);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        box-shadow: var(--sombra);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .header-titulo {
+        color: var(--amarelo);
+        font-size: 28px;
+        line-height: 1;
+        flex: 1;
+      }
+      .header-sub {
+        color: rgba(255,255,255,0.8);
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+      .header-user {
+        color: var(--branco);
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      /* Botão sair */
+      .btn-sair {
+        background: rgba(255,255,255,0.15);
+        color: var(--branco);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        border: 1px solid rgba(255,255,255,0.3);
+      }
+      .btn-sair:hover:not(:disabled) { background: rgba(255,255,255,0.25); }
+
+      /* Tabs */
+      .tabs {
+        display: flex;
+        background: var(--branco);
+        border-bottom: 3px solid var(--amarelo);
+        overflow-x: auto;
+      }
+      .tab {
+        padding: 14px 20px;
+        background: none;
+        color: var(--cinza-medio);
+        font-size: 14px;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -3px;
+        white-space: nowrap;
+      }
+      .tab.ativa {
+        color: var(--verde);
+        border-bottom-color: var(--verde);
+        font-weight: 800;
+      }
+      .tab:hover:not(.ativa) { color: var(--texto); transform: none; }
+
+      /* Conteúdo */
+      .conteudo {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+
+      /* Cards de jogo */
+      .fase-titulo {
+        font-size: 22px;
+        color: var(--verde);
+        margin: 24px 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .fase-titulo::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: var(--amarelo);
+        border-radius: 2px;
+      }
+
+      .jogo-card {
+        background: var(--branco);
+        border-radius: var(--raio);
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border-left: 4px solid var(--amarelo);
+        transition: box-shadow 0.15s;
+      }
+      .jogo-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+      .jogo-card.travado { border-left-color: var(--cinza); opacity: 0.8; }
+
+      .jogo-times {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .time-nome {
+        flex: 1;
+        font-weight: 700;
+        font-size: 15px;
+        min-width: 80px;
+      }
+      .time-nome.direita { text-align: right; }
+
+      .vs { color: var(--cinza-medio); font-weight: 800; font-size: 16px; }
+
+      .jogo-data {
+        font-size: 11px;
+        color: var(--cinza-medio);
+        text-align: right;
+        margin-top: 8px;
+        font-weight: 600;
+      }
+
+      .avanca-linha {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--cinza);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--cinza-medio);
+        font-weight: 600;
+      }
+      .avanca-select {
+        flex: 1;
+        padding: 6px 10px;
+        border-radius: var(--raio-sm);
+        border: 2px solid var(--amarelo);
+        background: #fffde7;
+        font-weight: 700;
+        color: var(--texto);
+        font-size: 13px;
+      }
+
+      /* ScoreStepper */
+      .stepper {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .stepper-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--cinza);
+        color: var(--texto);
+        font-size: 18px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        padding: 0;
+      }
+      .stepper-btn:hover:not(:disabled) { background: var(--verde); color: var(--branco); }
+      .stepper-num {
+        min-width: 32px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 800;
+        font-family: 'Bebas Neue', sans-serif;
+        color: var(--verde-escuro);
+      }
+
+      /* Classificação */
+      .classif-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .classif-table th {
+        padding: 12px 16px;
+        text-align: left;
+        background: var(--verde);
+        color: var(--amarelo);
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 16px;
+      }
+      .classif-table th:first-child { border-radius: var(--raio-sm) 0 0 0; }
+      .classif-table th:last-child { border-radius: 0 var(--raio-sm) 0 0; }
+      .classif-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--cinza);
+        font-size: 15px;
+      }
+      .classif-table tr:last-child td { border-bottom: none; }
+      .classif-table tr:nth-child(even) td { background: var(--cinza-claro); }
+      .pos-medal { font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
+
+      /* Admin */
+      .admin-header {
+        background: var(--azul);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .admin-titulo {
+        color: var(--amarelo);
+        font-size: 26px;
+        flex: 1;
+      }
+      .admin-tabs {
+        display: flex;
+        background: var(--branco);
+        border-bottom: 3px solid var(--azul);
+      }
+      .admin-tab {
+        padding: 14px 24px;
+        background: none;
+        color: var(--cinza-medio);
+        font-size: 14px;
+        border-radius: 0;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -3px;
+      }
+      .admin-tab.ativa { color: var(--azul); border-bottom-color: var(--azul); font-weight: 800; }
+
+      /* Botões principais */
+      .btn-verde {
+        background: var(--verde);
+        color: var(--branco);
+        padding: 10px 20px;
+        border-radius: var(--raio-sm);
+        font-size: 15px;
+      }
+      .btn-verde:hover:not(:disabled) { background: var(--verde-escuro); }
+      .btn-amarelo {
+        background: var(--amarelo);
+        color: var(--azul);
+        padding: 10px 20px;
+        border-radius: var(--raio-sm);
+        font-size: 15px;
+      }
+      .btn-amarelo:hover:not(:disabled) { background: var(--amarelo-escuro); }
+      .btn-azul {
+        background: var(--azul);
+        color: var(--branco);
+        padding: 10px 20px;
+        border-radius: var(--raio-sm);
+        font-size: 15px;
+      }
+      .btn-perigo {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      .btn-perigo:hover:not(:disabled) { background: #dc2626; color: var(--branco); }
+
+      /* Input padrão */
+      .input {
+        padding: 10px 14px;
+        border-radius: var(--raio-sm);
+        border: 2px solid var(--cinza);
+        font-size: 15px;
+        width: 100%;
+        transition: border-color 0.15s;
+        outline: none;
+      }
+      .input:focus { border-color: var(--verde); }
+
+      /* PIN destaque */
+      .pin-destaque {
+        background: #dcfce7;
+        border: 2px solid var(--verde);
+        border-radius: var(--raio);
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .pin-codigo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 32px;
+        letter-spacing: 6px;
+        color: var(--verde);
+      }
+
+      /* Bolo total */
+      .bolo-card {
+        background: var(--verde);
+        color: var(--branco);
+        border-radius: var(--raio);
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .bolo-label { font-size: 13px; opacity: 0.8; font-weight: 600; }
+      .bolo-valor { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--amarelo); }
+
+      /* Artilheiro */
+      .artilheiro-card {
+        background: var(--branco);
+        border-radius: var(--raio);
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border-top: 4px solid var(--amarelo);
+      }
+      .artilheiro-titulo { font-size: 26px; color: var(--verde); margin-bottom: 8px; }
+      .artilheiro-desc { color: var(--cinza-medio); font-size: 14px; margin-bottom: 20px; font-weight: 600; }
+
+      /* Login */
+      .login-bg {
+        min-height: 100vh;
+        background: linear-gradient(160deg, var(--verde-escuro) 0%, var(--verde) 50%, var(--verde-claro) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .login-card {
+        background: var(--branco);
+        border-radius: 24px;
+        padding: 40px 36px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        text-align: center;
+      }
+      .login-titulo { font-size: 40px; color: var(--verde); margin: 16px 0 4px; }
+      .login-sub { color: var(--cinza-medio); font-size: 14px; font-weight: 600; margin-bottom: 28px; }
+      .login-input {
+        padding: 14px;
+        border-radius: 12px;
+        border: 2px solid var(--cinza);
+        font-size: 22px;
+        text-align: center;
+        letter-spacing: 6px;
+        width: 100%;
+        font-weight: 800;
+        color: var(--verde-escuro);
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .login-input:focus { border-color: var(--verde); }
+      .login-btn {
+        width: 100%;
+        margin-top: 16px;
+        padding: 14px;
+        font-size: 18px;
+        background: var(--verde);
+        color: var(--branco);
+        border-radius: 12px;
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 1px;
+      }
+      .login-btn:hover:not(:disabled) { background: var(--verde-escuro); }
+      .login-erro { color: #dc2626; font-size: 13px; margin-top: 8px; font-weight: 600; }
+      .login-admin { font-size: 12px; color: rgba(255,255,255,0.5); background: none; border: none; margin-top: 24px; cursor: pointer; text-decoration: underline; }
+
+      /* Utilitários */
+      .flex { display: flex; }
+      .gap-8 { gap: 8px; }
+      .gap-12 { gap: 12px; }
+      .items-center { align-items: center; }
+      .justify-between { justify-content: space-between; }
+      .w-full { width: 100%; }
+      .mt-16 { margin-top: 16px; }
+      .mb-16 { margin-bottom: 16px; }
+      .texto-center { text-align: center; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

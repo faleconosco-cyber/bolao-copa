@@ -34,55 +34,72 @@ export function ManageParticipants() {
   async function handleDelete(id: string, pName: string) {
     if (!confirm(`Remover ${pName}?`)) return
     await deleteParticipant(id)
+    setLastPin('')
     load()
   }
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <p style={{ padding: 24, color: 'var(--cinza-medio)' }}>Carregando...</p>
 
   return (
-    <div>
-      <h3>👥 Apostadores ({participants.length})</h3>
+    <div className="conteudo">
+      <h2 className="fase-titulo">Apostadores ({participants.length})</h2>
+
       <form onSubmit={handleAdd} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
         <input
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Nome do apostador"
-          style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #ccc' }}
+          className="input"
         />
-        <button type="submit" style={{ padding: '8px 16px', background: '#16a34a', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
-          Adicionar
+        <button type="submit" className="btn-verde" style={{ whiteSpace: 'nowrap' }}>
+          + Adicionar
         </button>
       </form>
+
       {lastPin && (
-        <div style={{ padding: 12, background: '#dcfce7', borderRadius: 8, marginBottom: 16 }}>
-          ✅ PIN gerado: <strong style={{ fontSize: 20, letterSpacing: 4 }}>{lastPin}</strong> — anote e entregue ao apostador!
+        <div className="pin-destaque">
+          <div>
+            <div style={{ fontSize: 12, color: 'var(--verde)', fontWeight: 700, marginBottom: 4 }}>PIN GERADO — anote e entregue ao apostador!</div>
+            <div className="pin-codigo">{lastPin}</div>
+          </div>
+          <button onClick={() => setLastPin('')} style={{ background: 'none', border: 'none', color: 'var(--cinza-medio)', fontSize: 18, cursor: 'pointer' }}>✕</button>
         </div>
       )}
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr style={{ background: '#f1f5f9' }}>
-            <th style={th}>Nome</th>
-            <th style={th}>PIN</th>
-            <th style={th}></th>
-          </tr>
-        </thead>
-        <tbody>
-          {participants.map(p => (
-            <tr key={p.id}>
-              <td style={td}>{p.name}</td>
-              <td style={{ ...td, fontFamily: 'monospace', letterSpacing: 2 }}>{p.pin}</td>
-              <td style={td}>
-                <button onClick={() => handleDelete(p.id, p.name)} style={{ padding: '4px 10px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}>
-                  Remover
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      {participants.length === 0 ? (
+        <p style={{ color: 'var(--cinza-medio)', textAlign: 'center', padding: '32px 0', fontWeight: 600 }}>
+          Nenhum apostador ainda. Adicione o primeiro!
+        </p>
+      ) : (
+        <div style={{ background: 'var(--branco)', borderRadius: 'var(--raio)', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}>
+          <table className="classif-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>PIN</th>
+                <th style={{ width: 80 }}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {participants.map(p => (
+                <tr key={p.id}>
+                  <td style={{ fontWeight: 700 }}>{p.name}</td>
+                  <td>
+                    <span style={{ fontFamily: 'monospace', letterSpacing: 3, fontWeight: 700, color: 'var(--verde)', fontSize: 16 }}>
+                      {p.pin}
+                    </span>
+                  </td>
+                  <td>
+                    <button onClick={() => handleDelete(p.id, p.name)} className="btn-perigo">
+                      Remover
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
-
-const th: React.CSSProperties = { padding: '8px 12px', textAlign: 'left' }
-const td: React.CSSProperties = { padding: '8px 12px', borderBottom: '1px solid #eee' }

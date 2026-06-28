@@ -17,23 +17,32 @@ export function AdminLogin({ onLogin }: Props) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1e293b' }}>
-      <div style={{ background: '#fff', padding: 40, borderRadius: 12, width: 320 }}>
-        <h2 style={{ textAlign: 'center', marginBottom: 24 }}>🔐 Admin</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="password"
-            value={pwd}
-            onChange={e => setPwd(e.target.value)}
-            placeholder="Senha admin"
-            style={{ width: '100%', padding: '10px 12px', fontSize: 16, borderRadius: 8, border: '1px solid #ccc', boxSizing: 'border-box' }}
-            autoFocus
-          />
-          {error && <p style={{ color: 'red', fontSize: 13, marginTop: 8 }}>{error}</p>}
-          <button type="submit" style={{ width: '100%', marginTop: 16, padding: 12, background: '#1e293b', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 16 }}>
-            Entrar
-          </button>
-        </form>
+    <div className="login-bg" style={{ background: 'linear-gradient(160deg, #001a5c 0%, #002776 60%, #003399 100%)' }}>
+      <div>
+        <div className="login-card">
+          <div style={{ fontSize: 48, textAlign: 'center', marginBottom: 8 }}>🔐</div>
+          <h1 className="login-titulo" style={{ color: 'var(--azul)' }}>Admin</h1>
+          <p className="login-sub">Acesso restrito — apenas Cláudia</p>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="password"
+              value={pwd}
+              onChange={e => setPwd(e.target.value)}
+              placeholder="Senha"
+              className="login-input"
+              style={{ letterSpacing: 4 }}
+              autoFocus
+            />
+            {error && <p className="login-erro">{error}</p>}
+            <button
+              type="submit"
+              className="login-btn"
+              style={{ background: 'var(--azul)' }}
+            >
+              Entrar
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )
