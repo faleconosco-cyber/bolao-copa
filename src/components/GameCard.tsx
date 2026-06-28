@@ -11,8 +11,11 @@ interface Props {
   semiLosers?: [string | null, string | null]
 }
 
+// Jogos liberados da trava de 24h (continuam editáveis mesmo no dia do jogo).
+const JOGOS_LIBERADOS = new Set(['G73'])
+
 export function GameCard({ game, prediction, participantId, semiLosers }: Props) {
-  const locked = isGameLocked(game.date, new Date())
+  const locked = JOGOS_LIBERADOS.has(game.id) ? false : isGameLocked(game.date, new Date())
   const [homeScore, setHomeScore] = useState(prediction?.homeScore ?? 0)
   const [awayScore, setAwayScore] = useState(prediction?.awayScore ?? 0)
   const [advanceTeam, setAdvanceTeam] = useState<string>(prediction?.advanceTeam ?? '')
