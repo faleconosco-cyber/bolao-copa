@@ -7,8 +7,10 @@ function generatePin(): string {
   return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
 }
 
+const SITE_URL = 'https://bolao-copa-nine-kohl.vercel.app'
+
 function mensagemWhatsapp(nome: string, pin: string): string {
-  const site = window.location.origin
+  const site = SITE_URL
   return (
     `Oi, ${nome}! 🏆⚽\n\n` +
     `Você está no nosso Bolão da Copa 2026!\n\n` +
