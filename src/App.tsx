@@ -8,6 +8,7 @@ import { Standings } from './components/Standings'
 import { AdminLogin } from './components/admin/AdminLogin'
 import { ManageParticipants } from './components/admin/ManageParticipants'
 import { EnterResults } from './components/admin/EnterResults'
+import { BolaIcon } from './components/BolaIcon'
 
 type Tab = 'palpites' | 'artilheiro' | 'classificacao'
 type AdminTab = 'apostadores' | 'resultados'
@@ -23,8 +24,8 @@ export default function App() {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--cinza-claro)' }}>
         <div className="admin-header">
-          <div className="bola" style={{ width: 48, height: 48 }} />
-          <h1 className="admin-titulo">Bolão Copa 2026 — Admin</h1>
+          <BolaIcon size={48} />
+          <h1 className="admin-titulo" style={{ fontSize: 22, whiteSpace: 'nowrap' }}>Bolão Copa 2026 — Admin</h1>
           <button onClick={() => { logoutAdmin(); setAdminMode(false) }} className="btn-sair">
             Sair do admin
           </button>
@@ -57,7 +58,7 @@ export default function App() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--cinza-claro)' }}>
       <div className="header">
-        <div className="bola" style={{ width: 48, height: 48 }} />
+        <BolaIcon size={48} />
         <div style={{ flex: 1 }}>
           <div className="header-titulo">Bolão Copa 2026</div>
           <div className="header-sub">🇧🇷 Fase final — Rumo ao Hexa!</div>

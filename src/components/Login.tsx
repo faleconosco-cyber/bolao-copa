@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { login } from '../auth/session'
 import type { Participant } from '../lib/types'
+import { BolaIcon } from './BolaIcon'
 
 interface Props {
   onLogin: (p: Participant) => void
@@ -30,7 +31,7 @@ export function Login({ onLogin, onAdminClick }: Props) {
       <div>
         <div className="login-card">
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <div className="bola" />
+            <BolaIcon size={80} />
           </div>
           <h1 className="login-titulo">Bolão Copa 2026</h1>
           <p className="login-sub">Digite seu código PIN para entrar</p>
