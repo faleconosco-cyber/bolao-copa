@@ -22,66 +22,40 @@ export function GameCard({ game, prediction, participantId, semiLosers }: Props)
   const awayTeam = game.phase === 'terceiro' ? (semiLosers?.[1] ?? '?') : (game.awayTeam ?? '?')
 
   async function save(h: number, a: number, adv: string) {
-    const pred: Prediction = {
-      participantId,
-      gameId: game.id,
-      homeScore: h,
-      awayScore: a,
-      advanceTeam: adv || null,
-    }
-    await savePrediction(pred)
+    await savePrediction({ participantId, gameId: game.id, homeScore: h, awayScore: a, advanceTeam: adv || null })
   }
 
-  function handleHomeScore(v: number) {
-    setHomeScore(v)
-    save(v, awayScore, advanceTeam)
-  }
-
-  function handleAwayScore(v: number) {
-    setAwayScore(v)
-    save(homeScore, v, advanceTeam)
-  }
-
-  function handleAdvance(team: string) {
-    setAdvanceTeam(team)
-    save(homeScore, awayScore, team)
-  }
-
-  const cardStyle: React.CSSProperties = {
-    border: '1px solid #ddd',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    background: locked ? '#f9f9f9' : '#fff',
-    opacity: locked ? 0.8 : 1,
-  }
+  function handleHomeScore(v: number) { setHomeScore(v); save(v, awayScore, advanceTeam) }
+  function handleAwayScore(v: number) { setAwayScore(v); save(homeScore, v, advanceTeam) }
+  function handleAdvance(team: string) { setAdvanceTeam(team); save(homeScore, awayScore, team) }
 
   return (
-    <div style={cardStyle}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <span style={{ flex: 1, textAlign: 'right', fontWeight: 500 }}>{homeTeam}</span>
+    <div className={`jogo-card${locked ? ' travado' : ''}`}>
+      <div className="jogo-times">
+        <span className="time-nome direita">{homeTeam}</span>
         <ScoreStepper value={homeScore} onChange={handleHomeScore} disabled={locked} />
-        <span style={{ fontSize: 18 }}>×</span>
+        <span className="vs">VS</span>
         <ScoreStepper value={awayScore} onChange={handleAwayScore} disabled={locked} />
-        <span style={{ flex: 1, fontWeight: 500 }}>{awayTeam}</span>
-        {locked && <span title="Palpite travado">🔒</span>}
+        <span className="time-nome">{awayTeam}</span>
       </div>
+
       {isDraw && !locked && (
-        <div style={{ marginTop: 12, textAlign: 'center' }}>
-          <label style={{ marginRight: 8, fontSize: 14 }}>Quem avança?</label>
-          <select
-            value={advanceTeam}
-            onChange={e => handleAdvance(e.target.value)}
-            style={{ padding: '4px 8px' }}
-          >
+        <div className="avanca-linha">
+          <span>Quem avança?</span>
+          <select className="avanca-select" value={advanceTeam} onChange={e => handleAdvance(e.target.value)}>
             <option value="">— escolha —</option>
             <option value={homeTeam}>{homeTeam}</option>
             <option value={awayTeam}>{awayTeam}</option>
           </select>
         </div>
       )}
-      <div style={{ fontSize: 12, color: '#999', marginTop: 8, textAlign: 'right' }}>
-        {game.date} {locked ? '🔒 Travado' : '✏️ Editável até véspera'}
+
+      <div className="jogo-data" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {locked
+          ? <span className="lock-badge">🔒 Travado</span>
+          : <span style={{ color: 'var(--neon)', fontSize: 10, fontWeight: 700 }}>✏ Editável até véspera</span>
+        }
+        <span>{game.date}</span>
       </div>
     </div>
   )

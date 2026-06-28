@@ -22,7 +22,7 @@ export default function App() {
 
   if (adminMode) {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--cinza-claro)' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
         <div className="admin-header">
           <BolaIcon size={48} />
           <h1 className="admin-titulo" style={{ fontSize: 22, whiteSpace: 'nowrap' }}>Bolão Copa 2026 — Admin</h1>
@@ -56,7 +56,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--cinza-claro)' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <div className="header">
         <BolaIcon size={48} />
         <div style={{ flex: 1 }}>

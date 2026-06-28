@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react'
 import { getGames, saveGameResult, getConfig, saveArtilheiroReal } from '../../supabase/api'
 import type { Game } from '../../lib/types'
 
-interface GameRow extends Game {
-  resultHome: number | null
-  resultAway: number | null
-  resultAdvanceTeam: string | null
-}
+interface GameRow extends Game { resultHome: number | null; resultAway: number | null; resultAdvanceTeam: string | null }
 
 export function EnterResults() {
   const [games, setGames] = useState<GameRow[]>([])
@@ -24,60 +20,50 @@ export function EnterResults() {
     setLoading(false)
   }
 
-  async function handleResult(game: GameRow, home: number, away: number, advance: string) {
-    await saveGameResult(game.id, home, away, advance)
-    load()
-  }
-
   async function handleArtilheiro(e: React.FormEvent) {
     e.preventDefault()
     await saveArtilheiroReal(artilheiro.trim())
     setSavedArt(artilheiro.trim())
-    alert('Artilheiro salvo!')
   }
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <p style={{ padding: 24, color: 'var(--texto-dim)' }}>Carregando...</p>
 
   const phases = ['oitavas', 'quartas', 'semis', 'terceiro', 'final'] as const
+  const phaseLabel = { oitavas: 'Oitavas', quartas: 'Quartas', semis: 'Semifinais', terceiro: '3º Lugar', final: 'Final' }
 
   return (
-    <div>
-      <h3>⚽ Lançar Resultados</h3>
+    <div className="conteudo">
       {phases.map(phase => {
-        const phaseGames = games.filter(g => g.phase === phase)
-        if (!phaseGames.length) return null
+        const pg = games.filter(g => g.phase === phase)
+        if (!pg.length) return null
         return (
           <div key={phase} style={{ marginBottom: 24 }}>
-            <h4 style={{ borderBottom: '1px solid #eee', paddingBottom: 4 }}>
-              {{ oitavas: 'Oitavas', quartas: 'Quartas', semis: 'Semifinais', terceiro: '3º Lugar', final: 'Final' }[phase]}
-            </h4>
-            {phaseGames.map(g => (
-              <ResultRow key={g.id} game={g} onSave={handleResult} />
-            ))}
+            <h2 className="fase-titulo">{phaseLabel[phase]}</h2>
+            {pg.map(g => <ResultRow key={g.id} game={g} onSave={async (h, a, adv) => { await saveGameResult(g.id, h, a, adv); load() }} />)}
           </div>
         )
       })}
 
-      <div style={{ marginTop: 32, padding: 16, background: '#fef9c3', borderRadius: 8 }}>
-        <h4>🥅 Artilheiro da Copa</h4>
-        {savedArt && <p>Atual: <strong>{savedArt}</strong></p>}
+      <div style={{ marginTop: 8, background: 'var(--card)', border: '1px solid rgba(245,196,0,0.2)', borderRadius: 'var(--raio)', padding: '18px 20px' }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: 'var(--amarelo)', marginBottom: 14, letterSpacing: 1 }}>
+          Artilheiro da Copa
+        </div>
+        {savedArt && (
+          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--texto-dim)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>Atual:</span>
+            <span style={{ fontWeight: 800, color: 'var(--neon)' }}>{savedArt}</span>
+          </div>
+        )}
         <form onSubmit={handleArtilheiro} style={{ display: 'flex', gap: 8 }}>
-          <input
-            value={artilheiro}
-            onChange={e => setArtilheiro(e.target.value)}
-            placeholder="Nome do artilheiro"
-            style={{ flex: 1, padding: '8px 12px', borderRadius: 6, border: '1px solid #ccc' }}
-          />
-          <button type="submit" style={{ padding: '8px 16px', background: '#ca8a04', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
-            Salvar
-          </button>
+          <input value={artilheiro} onChange={e => setArtilheiro(e.target.value)} placeholder="Nome do artilheiro" className="input" />
+          <button type="submit" className="btn-neon" style={{ whiteSpace: 'nowrap' }}>Salvar</button>
         </form>
       </div>
     </div>
   )
 }
 
-function ResultRow({ game, onSave }: { game: GameRow; onSave: (g: GameRow, h: number, a: number, adv: string) => void }) {
+function ResultRow({ game, onSave }: { game: GameRow; onSave: (h: number, a: number, adv: string) => void }) {
   const [home, setHome] = useState(game.resultHome ?? 0)
   const [away, setAway] = useState(game.resultAway ?? 0)
   const [advance, setAdvance] = useState(game.resultAdvanceTeam ?? '')
@@ -86,24 +72,26 @@ function ResultRow({ game, onSave }: { game: GameRow; onSave: (g: GameRow, h: nu
   const awayTeam = game.awayTeam ?? 'Time B'
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, flexWrap: 'wrap', padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
-      <span style={{ flex: 1, textAlign: 'right', fontSize: 13 }}>{homeTeam}</span>
-      <input type="number" min={0} max={20} value={home} onChange={e => setHome(Number(e.target.value))} style={{ width: 48, textAlign: 'center', padding: 4, fontSize: 16 }} />
-      <span>×</span>
-      <input type="number" min={0} max={20} value={away} onChange={e => setAway(Number(e.target.value))} style={{ width: 48, textAlign: 'center', padding: 4, fontSize: 16 }} />
-      <span style={{ flex: 1, fontSize: 13 }}>{awayTeam}</span>
+    <div style={{ background: 'var(--card)', borderRadius: 'var(--raio)', border: '1px solid var(--borda)', padding: '12px 16px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+      <span style={{ flex: 1, textAlign: 'right', fontWeight: 700, fontSize: 13, color: 'var(--branco)' }}>{homeTeam}</span>
+      <input type="number" min={0} max={20} value={home} onChange={e => setHome(Number(e.target.value))}
+        style={{ width: 52, textAlign: 'center', padding: '6px 4px', fontSize: 20, fontWeight: 800, background: 'var(--bg3)', border: '1px solid var(--borda)', borderRadius: 6, color: 'var(--neon)', outline: 'none' }} />
+      <span style={{ color: 'var(--texto-dim)', fontWeight: 800 }}>×</span>
+      <input type="number" min={0} max={20} value={away} onChange={e => setAway(Number(e.target.value))}
+        style={{ width: 52, textAlign: 'center', padding: '6px 4px', fontSize: 20, fontWeight: 800, background: 'var(--bg3)', border: '1px solid var(--borda)', borderRadius: 6, color: 'var(--neon)', outline: 'none' }} />
+      <span style={{ flex: 1, fontWeight: 700, fontSize: 13, color: 'var(--branco)' }}>{awayTeam}</span>
       {isDraw && (
-        <select value={advance} onChange={e => setAdvance(e.target.value)} style={{ padding: '4px 8px' }}>
+        <select value={advance} onChange={e => setAdvance(e.target.value)} className="avanca-select" style={{ flex: 'none', width: 'auto' }}>
           <option value="">Quem avançou?</option>
           <option value={homeTeam}>{homeTeam}</option>
           <option value={awayTeam}>{awayTeam}</option>
         </select>
       )}
-      <button onClick={() => onSave(game, home, away, advance)} style={{ padding: '6px 14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>
+      <button onClick={() => onSave(home, away, advance)} className="btn-neon" style={{ padding: '7px 14px', fontSize: 13 }}>
         Salvar
       </button>
       {game.resultHome != null && (
-        <span style={{ fontSize: 12, color: '#16a34a' }}>✓ {game.resultHome}×{game.resultAway}</span>
+        <span style={{ fontSize: 12, color: 'var(--neon)', fontWeight: 800 }}>✓ {game.resultHome}×{game.resultAway}</span>
       )}
     </div>
   )

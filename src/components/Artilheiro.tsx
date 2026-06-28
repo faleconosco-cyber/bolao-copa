@@ -11,10 +11,7 @@ export function Artilheiro({ participantId }: Props) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      getGames(),
-      getArtilheiroPrediction(participantId),
-    ]).then(([games, pred]) => {
+    Promise.all([getGames(), getArtilheiroPrediction(participantId)]).then(([games, pred]) => {
       const firstOitavas = games.filter(g => g.phase === 'oitavas').sort((a, b) => a.order - b.order)[0]
       if (firstOitavas) setLocked(isArtilheiroLocked(firstOitavas.date, new Date()))
       if (pred) { setPlayer(pred); setSaved(pred) }
@@ -26,36 +23,52 @@ export function Artilheiro({ participantId }: Props) {
     if (!player.trim()) return
     await saveArtilheiroPrediction(participantId, player.trim())
     setSaved(player.trim())
-    alert('Artilheiro salvo!')
   }
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) return <p style={{ padding: 24, color: 'var(--texto-dim)' }}>Carregando...</p>
 
   return (
-    <div style={{ maxWidth: 400, margin: '0 auto', padding: 24 }}>
-      <h3>🥅 Artilheiro da Copa</h3>
-      <p style={{ color: '#666', fontSize: 14 }}>
-        Acertar o artilheiro vale <strong>20 pontos</strong>. Trava junto com o primeiro jogo das oitavas.
-      </p>
-      {locked ? (
-        <div style={{ padding: 12, background: '#f5f5f5', borderRadius: 8 }}>
-          <span>🔒 Travado</span>
-          {saved && <p>Seu palpite: <strong>{saved}</strong></p>}
+    <div style={{ maxWidth: 480, margin: '0 auto' }}>
+      <div className="artilheiro-card">
+        <div className="artilheiro-titulo">Artilheiro da Copa</div>
+        <div className="artilheiro-desc">
+          Acertar o artilheiro vale <strong style={{ color: 'var(--amarelo)' }}>+20 pontos</strong>. Trava junto com o primeiro jogo das oitavas.
         </div>
-      ) : (
-        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-          <input
-            value={player}
-            onChange={e => setPlayer(e.target.value)}
-            placeholder="Nome do jogador"
-            style={{ flex: 1, padding: '8px 12px', fontSize: 16, borderRadius: 6, border: '1px solid #ccc' }}
-          />
-          <button onClick={handleSave} style={{ padding: '8px 16px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>
-            Salvar
-          </button>
-        </div>
-      )}
-      {saved && !locked && <p style={{ color: '#16a34a', marginTop: 8 }}>✓ Salvo: {saved}</p>}
+
+        {locked ? (
+          <div style={{ background: 'var(--bg3)', borderRadius: 8, padding: '14px 16px' }}>
+            <div className="lock-badge" style={{ marginBottom: 8 }}>🔒 Palpite Travado</div>
+            {saved && (
+              <div style={{ marginTop: 8 }}>
+                <span style={{ color: 'var(--texto-dim)', fontSize: 12, fontWeight: 700 }}>SEU PALPITE</span>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--neon)', marginTop: 4 }}>{saved}</div>
+              </div>
+            )}
+            {!saved && <p style={{ color: 'var(--texto-dim)', fontSize: 13 }}>Nenhum palpite registrado.</p>}
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                value={player}
+                onChange={e => setPlayer(e.target.value)}
+                placeholder="Nome do jogador"
+                className="input"
+                onKeyDown={e => e.key === 'Enter' && handleSave()}
+              />
+              <button onClick={handleSave} disabled={!player.trim()} className="btn-neon" style={{ whiteSpace: 'nowrap' }}>
+                Salvar
+              </button>
+            </div>
+            {saved && (
+              <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ color: 'var(--neon)', fontSize: 12, fontWeight: 800 }}>✓ SALVO</span>
+                <span style={{ color: 'var(--texto)', fontWeight: 700 }}>{saved}</span>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
