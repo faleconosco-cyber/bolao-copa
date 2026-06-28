@@ -11,11 +11,17 @@ interface Props {
   semiLosers?: [string | null, string | null]
 }
 
-// Jogos liberados da trava de 24h (continuam editáveis mesmo no dia do jogo).
-const JOGOS_LIBERADOS = new Set(['G73'])
+// Travas personalizadas por jogo (instante exato em UTC).
+// G73 (África do Sul x Canadá): trava 28/06 às 14h de Brasília (= 17h UTC).
+const TRAVAS_ESPECIAIS: Record<string, string> = {
+  G73: '2026-06-28T17:00:00Z',
+}
 
 export function GameCard({ game, prediction, participantId, semiLosers }: Props) {
-  const locked = JOGOS_LIBERADOS.has(game.id) ? false : isGameLocked(game.date, new Date())
+  const travaEspecial = TRAVAS_ESPECIAIS[game.id]
+  const locked = travaEspecial
+    ? Date.now() >= new Date(travaEspecial).getTime()
+    : isGameLocked(game.date, new Date())
   const [homeScore, setHomeScore] = useState(prediction?.homeScore ?? 0)
   const [awayScore, setAwayScore] = useState(prediction?.awayScore ?? 0)
   const [advanceTeam, setAdvanceTeam] = useState<string>(prediction?.advanceTeam ?? '')
