@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getAllParticipants, getGames, getPredictions, getArtilheiroPrediction } from '../../supabase/api'
+import { getAllParticipants, getGames, getPredictions, getArtilheiroPrediction, getAllPredictions } from '../../supabase/api'
 import { fillBracket } from '../../lib/bracket'
 import type { Participant, Game, Prediction } from '../../lib/types'
 
@@ -19,13 +19,15 @@ export function AdminPredictions() {
   const [selectedId, setSelectedId] = useState<string>('')
   const [preds, setPreds] = useState<Prediction[]>([])
   const [artilheiro, setArtilheiro] = useState<string | null>(null)
+  const [comPalpite, setComPalpite] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [loadingPreds, setLoadingPreds] = useState(false)
 
   useEffect(() => {
-    Promise.all([getAllParticipants(), getGames()]).then(([ps, gs]) => {
+    Promise.all([getAllParticipants(), getGames(), getAllPredictions()]).then(([ps, gs, allPreds]) => {
       setParticipants(ps)
       setGames(gs)
+      setComPalpite(new Set(allPreds.map(p => p.participantId)))
       setLoading(false)
     })
   }, [])
@@ -46,9 +48,30 @@ export function AdminPredictions() {
   const predMap = new Map(preds.map(p => [p.gameId, p]))
   const selecionado = participants.find(p => p.id === selectedId)
 
+  const faltam = participants.filter(p => !comPalpite.has(p.id))
+
   return (
     <div className="conteudo">
       <h2 className="fase-titulo">Ver palpites dos apostadores</h2>
+
+      {participants.length > 0 && (
+        <div style={{ background: 'var(--card)', border: '1px solid var(--borda)', borderRadius: 'var(--raio)', padding: '14px 16px', marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: 'var(--texto-dim)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>Já começaram a preencher</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--neon)', lineHeight: 1.1, marginTop: 2 }}>
+            {comPalpite.size} <span style={{ color: 'var(--texto-dim)', fontSize: 18 }}>de {participants.length}</span>
+          </div>
+          {faltam.length > 0 && (
+            <div style={{ marginTop: 10 }}>
+              <span style={{ fontSize: 11, color: 'var(--amarelo)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1 }}>Ainda não preencheram:</span>
+              <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {faltam.map(p => (
+                  <span key={p.id} style={{ background: 'var(--bg3)', color: 'var(--texto)', fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 6 }}>{p.name}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <select
         value={selectedId}
