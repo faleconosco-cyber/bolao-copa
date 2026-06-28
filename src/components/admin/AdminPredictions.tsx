@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getAllParticipants, getGames, getPredictions, getArtilheiroPrediction, getAllPredictions } from '../../supabase/api'
-import { fillBracket } from '../../lib/bracket'
+import { fillBracket, advancingTeam } from '../../lib/bracket'
 import type { Participant, Game, Prediction } from '../../lib/types'
 
 const PHASE_LABELS: Record<string, string> = {
@@ -47,6 +47,16 @@ export function AdminPredictions() {
   const filled = fillBracket(games, preds)
   const predMap = new Map(preds.map(p => [p.gameId, p]))
   const selecionado = participants.find(p => p.id === selectedId)
+
+  // Times do 3º lugar = perdedores das semis, conforme o palpite da pessoa.
+  function loserOfSemi(semiId: string): string | null {
+    const fg = filled.find(g => g.id === semiId)
+    if (!fg || fg.homeTeam == null || fg.awayTeam == null) return null
+    const adv = advancingTeam(fg, predMap.get(semiId))
+    if (!adv) return null
+    return adv === fg.homeTeam ? fg.awayTeam : fg.homeTeam
+  }
+  const terceiroTeams: [string | null, string | null] = [loserOfSemi('G101'), loserOfSemi('G102')]
 
   const faltam = participants.filter(p => !comPalpite.has(p.id))
 
@@ -110,14 +120,27 @@ export function AdminPredictions() {
                 <h3 className="fase-titulo" style={{ marginTop: 8 }}>{PHASE_LABELS[phase]}</h3>
                 {phaseGames.map(g => {
                   const pr = predMap.get(g.id)
-                  const home = g.homeTeam ?? '?'
-                  const away = g.awayTeam ?? '?'
+                  const home = (g.phase === 'terceiro' ? terceiroTeams[0] : g.homeTeam) ?? '?'
+                  const away = (g.phase === 'terceiro' ? terceiroTeams[1] : g.awayTeam) ?? '?'
                   const preencheu = !!pr
+
+                  // Rodada de 32: mostra o placar. Demais fases: mostra quem a pessoa escolheu pra avançar.
+                  let meio: string
+                  let cor = 'var(--texto-dim)'
+                  if (g.phase === 'rodada32') {
+                    meio = preencheu ? `${pr!.homeScore} × ${pr!.awayScore}` : '— × —'
+                    if (preencheu) cor = 'var(--neon)'
+                  } else {
+                    const escolha = pr?.advanceTeam
+                    meio = escolha ? `✓ ${escolha}` : 'não escolheu'
+                    if (escolha) cor = 'var(--neon)'
+                  }
+
                   return (
                     <div key={g.id} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'var(--card)', border: '1px solid var(--borda)', borderRadius: 8, marginBottom: 6 }}>
                       <span style={{ flex: 1, textAlign: 'right', color: 'var(--branco)', fontWeight: 700, fontSize: 13 }}>{home}</span>
-                      <span style={{ fontWeight: 800, color: preencheu ? 'var(--neon)' : 'var(--texto-dim)', fontSize: 16, minWidth: 50, textAlign: 'center' }}>
-                        {preencheu ? `${pr!.homeScore} × ${pr!.awayScore}` : '— × —'}
+                      <span style={{ fontWeight: 800, color: cor, fontSize: g.phase === 'rodada32' ? 16 : 12, minWidth: 80, textAlign: 'center' }}>
+                        {meio}
                       </span>
                       <span style={{ flex: 1, color: 'var(--branco)', fontWeight: 700, fontSize: 13 }}>{away}</span>
                     </div>
