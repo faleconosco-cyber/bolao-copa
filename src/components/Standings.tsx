@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getAllParticipants, getAllPredictions, getGames, getAllArtilheiroPredictions, getConfig } from '../supabase/api'
-import { scoreGame } from '../lib/scoring'
+import { scoreParticipant } from '../lib/score-standings'
 import { distributePrizes } from '../lib/prizes'
-import type { Game, Prediction, Participant } from '../lib/types'
+import type { Prediction, Participant } from '../lib/types'
 
-interface GameRow extends Game { resultHome: number | null; resultAway: number | null; resultAdvanceTeam: string | null }
 interface Standing { participant: Participant; points: number; prize: number; position: string }
 
 export function Standings() {
@@ -19,20 +18,13 @@ export function Standings() {
     const [participants, allPreds, games, artPreds, config] = await Promise.all([
       getAllParticipants(), getAllPredictions(), getGames(), getAllArtilheiroPredictions(), getConfig(),
     ])
-    const gamesWithResults = games as unknown as GameRow[]
     const totalPot = participants.length * config.inscricao
     setPot(totalPot)
     setCount(participants.length)
 
     const scored = participants.map(p => {
-      const predMap = new Map(allPreds.filter((pr: Prediction) => pr.participantId === p.id).map((pr: Prediction) => [pr.gameId, pr]))
-      let points = 0
-      for (const g of gamesWithResults) {
-        if (g.resultHome == null || g.resultAway == null) continue
-        const pred = predMap.get(g.id)
-        if (!pred) continue
-        points += scoreGame({ homeScore: pred.homeScore, awayScore: pred.awayScore }, { homeScore: g.resultHome, awayScore: g.resultAway })
-      }
+      const myPreds = allPreds.filter((pr: Prediction) => pr.participantId === p.id)
+      let points = scoreParticipant(games, myPreds)
       const myArt = artPreds[p.id]
       if (myArt && config.artilheiroReal && myArt.toLowerCase() === config.artilheiroReal.toLowerCase()) points += 20
       return { participant: p, points }

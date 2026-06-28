@@ -9,6 +9,9 @@ export interface Game {
   awayTeam: string | null
   homeSourceGameId: string | null
   awaySourceGameId: string | null
+  resultHome?: number | null
+  resultAway?: number | null
+  resultAdvanceTeam?: string | null
 }
 
 export interface Prediction {

@@ -11,6 +11,9 @@ function rowToGame(row: Record<string, unknown>): Game {
     awayTeam: row.away_team as string | null,
     homeSourceGameId: row.home_source_game_id as string | null,
     awaySourceGameId: row.away_source_game_id as string | null,
+    resultHome: (row.result_home ?? null) as number | null,
+    resultAway: (row.result_away ?? null) as number | null,
+    resultAdvanceTeam: (row.result_advance_team ?? null) as string | null,
   }
 }
 
