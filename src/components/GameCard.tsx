@@ -31,12 +31,20 @@ export function GameCard({ game, prediction, participantId, semiLosers }: Props)
 
   return (
     <div className={`jogo-card${locked ? ' travado' : ''}`}>
-      <div className="jogo-times">
-        <span className="time-nome direita">{homeTeam}</span>
-        <ScoreStepper value={homeScore} onChange={handleHomeScore} disabled={locked} />
+      <div className="jogo-confronto">
+        {/* Time mandante */}
+        <div className="jogo-lado">
+          <div className="jogo-time-nome">{homeTeam}</div>
+          <ScoreStepper value={homeScore} onChange={handleHomeScore} disabled={locked} />
+        </div>
+
         <span className="vs">VS</span>
-        <ScoreStepper value={awayScore} onChange={handleAwayScore} disabled={locked} />
-        <span className="time-nome">{awayTeam}</span>
+
+        {/* Time visitante */}
+        <div className="jogo-lado">
+          <div className="jogo-time-nome">{awayTeam}</div>
+          <ScoreStepper value={awayScore} onChange={handleAwayScore} disabled={locked} />
+        </div>
       </div>
 
       {isDraw && !locked && (
@@ -55,7 +63,7 @@ export function GameCard({ game, prediction, participantId, semiLosers }: Props)
           ? <span className="lock-badge">🔒 Travado</span>
           : <span style={{ color: 'var(--neon)', fontSize: 10, fontWeight: 700 }}>✏ Editável até véspera</span>
         }
-        <span>{game.date}</span>
+        <span>{game.date.split('-').reverse().join('/')}</span>
       </div>
     </div>
   )
