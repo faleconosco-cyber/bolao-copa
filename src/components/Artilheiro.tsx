@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getArtilheiroPrediction, saveArtilheiroPrediction } from '../supabase/api'
+import { getGames, getArtilheiroPrediction, saveArtilheiroPrediction } from '../supabase/api'
+import { selecoesDoTorneio } from '../lib/selecoes'
 
 interface Props { participantId: string }
 
@@ -7,23 +8,25 @@ interface Props { participantId: string }
 const ARTILHEIRO_DEADLINE = '2026-06-28T18:55:00Z'
 
 export function Artilheiro({ participantId }: Props) {
-  const [player, setPlayer] = useState('')
+  const [pais, setPais] = useState('')
   const [saved, setSaved] = useState('')
+  const [selecoes, setSelecoes] = useState<string[]>([])
   const [locked, setLocked] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getArtilheiroPrediction(participantId).then(pred => {
+    Promise.all([getGames(), getArtilheiroPrediction(participantId)]).then(([games, pred]) => {
+      setSelecoes(selecoesDoTorneio(games))
       setLocked(Date.now() >= new Date(ARTILHEIRO_DEADLINE).getTime())
-      if (pred) { setPlayer(pred); setSaved(pred) }
+      if (pred) { setPais(pred); setSaved(pred) }
       setLoading(false)
     })
   }, [participantId])
 
   async function handleSave() {
-    if (!player.trim()) return
-    await saveArtilheiroPrediction(participantId, player.trim())
-    setSaved(player.trim())
+    if (!pais) return
+    await saveArtilheiroPrediction(participantId, pais)
+    setSaved(pais)
   }
 
   if (loading) return <p style={{ padding: 24, color: 'var(--texto-dim)' }}>Carregando...</p>
@@ -33,7 +36,7 @@ export function Artilheiro({ participantId }: Props) {
       <div className="artilheiro-card">
         <div className="artilheiro-titulo">Artilheiro da Copa</div>
         <div className="artilheiro-desc">
-          Acertar o artilheiro vale <strong style={{ color: 'var(--amarelo)' }}>+20 pontos</strong>. Trava junto com o primeiro jogo do mata-mata.
+          De qual <strong style={{ color: 'var(--branco)' }}>seleção</strong> será o artilheiro da Copa? Acertar vale <strong style={{ color: 'var(--amarelo)' }}>+20 pontos</strong>. Trava junto com o primeiro jogo.
         </div>
 
         {locked ? (
@@ -41,7 +44,7 @@ export function Artilheiro({ participantId }: Props) {
             <div className="lock-badge" style={{ marginBottom: 8 }}>🔒 Palpite Travado</div>
             {saved && (
               <div style={{ marginTop: 8 }}>
-                <span style={{ color: 'var(--texto-dim)', fontSize: 12, fontWeight: 700 }}>SEU PALPITE</span>
+                <span style={{ color: 'var(--texto-dim)', fontSize: 12, fontWeight: 700 }}>SUA SELEÇÃO</span>
                 <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--neon)', marginTop: 4 }}>{saved}</div>
               </div>
             )}
@@ -50,14 +53,11 @@ export function Artilheiro({ participantId }: Props) {
         ) : (
           <>
             <div style={{ display: 'flex', gap: 8 }}>
-              <input
-                value={player}
-                onChange={e => setPlayer(e.target.value)}
-                placeholder="Nome do jogador"
-                className="input"
-                onKeyDown={e => e.key === 'Enter' && handleSave()}
-              />
-              <button onClick={handleSave} disabled={!player.trim()} className="btn-neon" style={{ whiteSpace: 'nowrap' }}>
+              <select value={pais} onChange={e => setPais(e.target.value)} className="input">
+                <option value="">— escolha a seleção —</option>
+                {selecoes.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+              <button onClick={handleSave} disabled={!pais} className="btn-neon" style={{ whiteSpace: 'nowrap' }}>
                 Salvar
               </button>
             </div>

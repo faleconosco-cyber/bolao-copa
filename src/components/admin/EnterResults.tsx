@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getGames, saveGameResult, getConfig, saveArtilheiroReal } from '../../supabase/api'
 import { computeRealBracket } from '../../lib/score-standings'
+import { selecoesDoTorneio } from '../../lib/selecoes'
 import type { Game } from '../../lib/types'
 
 interface GameRow extends Game { resultHome: number | null; resultAway: number | null; resultAdvanceTeam: string | null }
@@ -67,7 +68,10 @@ export function EnterResults() {
           </div>
         )}
         <form onSubmit={handleArtilheiro} style={{ display: 'flex', gap: 8 }}>
-          <input value={artilheiro} onChange={e => setArtilheiro(e.target.value)} placeholder="Nome do artilheiro" className="input" />
+          <select value={artilheiro} onChange={e => setArtilheiro(e.target.value)} className="input">
+            <option value="">— seleção do artilheiro —</option>
+            {selecoesDoTorneio(games).map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
           <button type="submit" className="btn-neon" style={{ whiteSpace: 'nowrap' }}>Salvar</button>
         </form>
       </div>
