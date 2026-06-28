@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { getGames, getArtilheiroPrediction, saveArtilheiroPrediction } from '../supabase/api'
-import { isArtilheiroLocked } from '../lib/lock'
+import { getArtilheiroPrediction, saveArtilheiroPrediction } from '../supabase/api'
 
 interface Props { participantId: string }
+
+// Artilheiro trava junto com o primeiro jogo (28/06 às 15:55 de Brasília = 18:55 UTC).
+const ARTILHEIRO_DEADLINE = '2026-06-28T18:55:00Z'
 
 export function Artilheiro({ participantId }: Props) {
   const [player, setPlayer] = useState('')
@@ -11,9 +13,8 @@ export function Artilheiro({ participantId }: Props) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    Promise.all([getGames(), getArtilheiroPrediction(participantId)]).then(([games, pred]) => {
-      const firstGame = [...games].sort((a, b) => a.date.localeCompare(b.date))[0]
-      if (firstGame) setLocked(isArtilheiroLocked(firstGame.date, new Date()))
+    getArtilheiroPrediction(participantId).then(pred => {
+      setLocked(Date.now() >= new Date(ARTILHEIRO_DEADLINE).getTime())
       if (pred) { setPlayer(pred); setSaved(pred) }
       setLoading(false)
     })
