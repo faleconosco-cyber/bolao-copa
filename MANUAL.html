@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Manual - Bolão Copa 2026</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; color: #1a1f2b; background: #fff; }
+
+  .page {
+    width: 210mm; min-height: 297mm; padding: 16mm 16mm 14mm;
+    page-break-after: always; position: relative; display: flex; flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h1 { font-size: 30px; color: #0d7d3f; line-height: 1.15; }
+  h2 { font-size: 22px; color: #0d7d3f; margin-bottom: 6px; }
+  p { font-size: 15px; line-height: 1.55; }
+
+  /* Capa */
+  .capa { align-items: center; justify-content: center; text-align: center; background: #0d0f14; color: #fff; }
+  .capa h1 { color: #fff; font-size: 42px; }
+  .capa .verde { color: #00e87a; }
+  .capa .sub { color: #9aa3b5; font-size: 18px; margin-top: 10px; }
+  .capa .link { margin-top: 28px; background: #00e87a; color: #0d0f14; font-weight: 800; font-size: 18px; padding: 14px 26px; border-radius: 12px; display: inline-block; }
+
+  /* Passo */
+  .passo { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 14px; }
+  .num { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; background: #00b85f; color: #fff; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .passo-txt h2 { margin-top: 4px; }
+
+  .conteudo { display: flex; gap: 24px; align-items: flex-start; margin-top: 6px; }
+  .coluna-txt { flex: 1; }
+  .dica { background: #eafff3; border-left: 5px solid #00b85f; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 14px; margin-top: 14px; }
+  .dica b { color: #0d7d3f; }
+  .alerta { background: #fff4e5; border-left: 5px solid #f5a623; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 14px; margin-top: 14px; }
+
+  ul { margin: 8px 0 0 4px; list-style: none; }
+  li { font-size: 15px; line-height: 1.7; padding-left: 26px; position: relative; }
+  li::before { content: ''; position: absolute; left: 0; top: 9px; width: 10px; height: 10px; background: #00b85f; border-radius: 50%; }
+
+  /* Celular */
+  .fone { width: 270px; flex-shrink: 0; background: #0d0f14; border: 7px solid #2a2f3c; border-radius: 26px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .f-hdr { background: #13161e; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+  .f-hdr .t { color: #fff; font-size: 15px; font-weight: 800; }
+  .f-hdr .t span { color: #00e87a; }
+  .f-tabs { background: #13161e; display: flex; border-bottom: 1px solid rgba(255,255,255,.08); padding: 0 6px; }
+  .f-tab { padding: 9px 8px; font-size: 10.5px; font-weight: 700; color: #5c6378; border-bottom: 2px solid transparent; }
+  .f-tab.on { color: #00e87a; border-bottom-color: #00e87a; }
+  .f-body { padding: 12px; }
+  .fase { color: #5c6378; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .jogo { background: #1e2330; border: 1px solid rgba(255,255,255,.06); border-radius: 10px; padding: 12px; }
+  .confronto { display: flex; align-items: center; gap: 8px; }
+  .lado { flex: 1; text-align: center; }
+  .lado .nome { color: #fff; font-weight: 800; font-size: 13px; margin-bottom: 6px; }
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .sb { width: 24px; height: 24px; background: #1a1e28; border: 1px solid rgba(255,255,255,.08); border-radius: 5px; color: #c7ccd8; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .snum { font-size: 24px; font-weight: 800; color: #00e87a; min-width: 26px; text-align: center; }
+  .vs { background: #1a1e28; color: #5c6378; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+  .avanca { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); font-size: 11px; color: #5c6378; font-weight: 700; }
+  .sel { margin-top: 6px; background: #1a1e28; border: 1px solid rgba(0,232,122,.3); border-radius: 6px; padding: 6px 8px; color: #fff; font-size: 12px; display: flex; justify-content: space-between; }
+  .f-data { font-size: 9.5px; color: #5c6378; margin-top: 8px; display: flex; justify-content: space-between; }
+
+  .login-fone { padding: 26px 18px; text-align: center; }
+  .login-fone .bola { font-size: 46px; }
+  .login-fone .lt { color: #fff; font-size: 22px; font-weight: 800; margin: 8px 0 2px; }
+  .login-fone .lt span { color: #00e87a; }
+  .login-fone .ls { color: #5c6378; font-size: 11px; margin-bottom: 16px; }
+  .login-fone .pin { background: #1a1e28; border: 1px solid #00e87a; border-radius: 8px; padding: 11px; color: #00e87a; font-size: 20px; font-weight: 800; letter-spacing: 6px; }
+  .login-fone .be { background: #00e87a; color: #0d0f14; font-weight: 800; border-radius: 8px; padding: 11px; margin-top: 8px; font-size: 14px; }
+
+  table.pts { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  table.pts td { padding: 11px 14px; border-bottom: 1px solid #e7e9ee; font-size: 15px; }
+  table.pts tr td:first-child { font-weight: 800; color: #0d7d3f; font-size: 20px; width: 70px; }
+  .rodape { margin-top: auto; padding-top: 14px; text-align: center; color: #9aa3b5; font-size: 12px; border-top: 1px solid #eee; }
+
+  .classif-row { display: flex; padding: 8px 10px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,.06); color: #e2e4ec; }
+  .classif-row .pos { width: 22px; font-weight: 800; color: #f5c400; }
+  .classif-row .nm { flex: 1; font-weight: 700; color: #fff; }
+  .classif-row .pt { color: #00e87a; font-weight: 800; }
+  .bolo { background: #1e2330; border: 1px solid rgba(245,196,0,.2); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .bolo .lab { font-size: 9px; color: #5c6378; font-weight: 800; }
+  .bolo .val { font-size: 22px; color: #f5c400; font-weight: 800; }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="page capa">
+  <div style="font-size:80px">⚽</div>
+  <h1>Bolão <span class="verde">Copa 2026</span></h1>
+  <p class="sub">Manual rápido — como apostar pelo celular</p>
+  <div class="link">bolao-copa-nine-kohl.vercel.app</div>
+  <p style="color:#5c6378; margin-top:40px; font-size:14px">É fácil, leva 2 minutos. Siga os passos deste guia. 🇧🇷</p>
+</div>
+
+<!-- PASSO 1 -->
+<div class="page">
+  <div class="passo"><div class="num">1</div><div class="passo-txt"><h2>Entrar no bolão</h2></div></div>
+  <div class="conteudo">
+    <div class="coluna-txt">
+      <p>Você recebeu pelo WhatsApp um <b>link</b> e um <b>código PIN</b> (6 letras/números, tipo <b>ABC123</b>).</p>
+      <ul>
+        <li>Toque no <b>link</b> que recebeu.</li>
+        <li>Digite o seu <b>PIN</b> no campo do meio.</li>
+        <li>Toque no botão verde <b>ENTRAR</b>.</li>
+      </ul>
+      <div class="dica"><b>Dica:</b> abra sempre pelo mesmo link. Se quiser, salve nos favoritos do celular pra achar fácil.</div>
+      <div class="dica"><b>Cada pessoa tem o seu PIN.</b> Não precisa criar senha nem cadastro. É só o código.</div>
+    </div>
+    <div class="fone">
+      <div class="login-fone">
+        <div class="bola">⚽</div>
+        <div class="lt">Bolão <span>Copa</span> 2026</div>
+        <div class="ls">Digite seu código PIN para entrar</div>
+        <div class="pin">ABC123</div>
+        <div class="be">ENTRAR</div>
+      </div>
+    </div>
+  </div>
+  <div class="rodape">Bolão Copa 2026 — manual de uso</div>
+</div>
+
+<!-- PASSO 2 -->
+<div class="page">
+  <div class="passo"><div class="num">2</div><div class="passo-txt"><h2>Dar o seu palpite (o placar)</h2></div></div>
+  <div class="conteudo">
+    <div class="coluna-txt">
+      <p>Na aba <b>Meus Palpites</b> aparecem os jogos. Em cada time tem um número com os botões <b>−</b> e <b>+</b>.</p>
+      <ul>
+        <li>Toque no <b>+</b> pra aumentar os gols do time.</li>
+        <li>Toque no <b>−</b> pra diminuir.</li>
+        <li>Faça isso nos <b>dois times</b> pra montar o placar que você acha que vai dar.</li>
+      </ul>
+      <div class="dica"><b>Salva sozinho!</b> Não tem botão de salvar. Assim que você mexe no número, já fica guardado. Pode fechar e voltar depois.</div>
+      <div class="alerta"><b>Atenção:</b> dá pra mudar o palpite até a <b>véspera</b> do jogo. No dia do jogo ele <b>trava</b> e não dá mais pra mexer.</div>
+    </div>
+    <div class="fone">
+      <div class="f-hdr"><span style="font-size:20px">⚽</span><div class="t">Bolão <span>Copa</span></div></div>
+      <div class="f-tabs"><div class="f-tab on">📝 Meus Palpites</div><div class="f-tab">🥅 Artilheiro</div></div>
+      <div class="f-body">
+        <div class="fase">RODADA DE 32</div>
+        <div class="jogo">
+          <div class="confronto">
+            <div class="lado"><div class="nome">Brasil</div><div class="stepper"><div class="sb">−</div><div class="snum">2</div><div class="sb">+</div></div></div>
+            <div class="vs">VS</div>
+            <div class="lado"><div class="nome">Japão</div><div class="stepper"><div class="sb">−</div><div class="snum">1</div><div class="sb">+</div></div></div>
+          </div>
+          <div class="f-data"><span style="color:#00e87a">✏ Editável até véspera</span><span>29/06/2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rodape">Bolão Copa 2026 — manual de uso</div>
+</div>
+
+<!-- PASSO 3 -->
+<div class="page">
+  <div class="passo"><div class="num">3</div><div class="passo-txt"><h2>Quando der empate: "Quem avança?"</h2></div></div>
+  <div class="conteudo">
+    <div class="coluna-txt">
+      <p>É mata-mata, então <b>não pode terminar empatado</b>. Se você colocar o mesmo número nos dois times (ex.: 1 a 1), vai aparecer a pergunta <b>"Quem avança?"</b>.</p>
+      <ul>
+        <li>Toque na setinha e <b>escolha o time</b> que você acha que passa de fase (nos pênaltis, por exemplo).</li>
+      </ul>
+      <div class="dica"><b>Importante:</b> escolher quem avança <b>não muda</b> seus pontos do placar. Serve só pra montar os próximos jogos do seu chaveamento.</div>
+      <div class="dica">Se você colocar um placar com vencedor (ex.: 2 a 1), essa pergunta <b>nem aparece</b> — o vencedor já é quem fez mais gols.</div>
+    </div>
+    <div class="fone">
+      <div class="f-body" style="padding-top:14px">
+        <div class="fase">RODADA DE 32</div>
+        <div class="jogo">
+          <div class="confronto">
+            <div class="lado"><div class="nome">Bélgica</div><div class="stepper"><div class="sb">−</div><div class="snum">1</div><div class="sb">+</div></div></div>
+            <div class="vs">VS</div>
+            <div class="lado"><div class="nome">Senegal</div><div class="stepper"><div class="sb">−</div><div class="snum">1</div><div class="sb">+</div></div></div>
+          </div>
+          <div class="avanca">Quem avança?
+            <div class="sel"><span>Bélgica</span><span>▾</span></div>
+          </div>
+          <div class="f-data"><span style="color:#00e87a">✏ Editável até véspera</span><span>01/07/2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rodape">Bolão Copa 2026 — manual de uso</div>
+</div>
+
+<!-- PASSO 4 -->
+<div class="page">
+  <div class="passo"><div class="num">4</div><div class="passo-txt"><h2>O Artilheiro e a Classificação</h2></div></div>
+  <div class="conteudo">
+    <div class="coluna-txt">
+      <p>No topo tem as abas. Toque nelas pra trocar de tela.</p>
+      <ul>
+        <li><b>🥅 Artilheiro:</b> escreva quem você acha que vai ser o maior goleador da Copa. Acertar vale <b>+20 pontos!</b></li>
+        <li><b>🏆 Classificação:</b> mostra a pontuação de todo mundo, o bolo de prêmio e quem está ganhando.</li>
+      </ul>
+      <div class="alerta"><b>O Artilheiro trava cedo:</b> junto com o primeiro jogo do mata-mata. Então chute logo o seu.</div>
+    </div>
+    <div class="fone">
+      <div class="f-hdr"><span style="font-size:20px">⚽</span><div class="t">Bolão <span>Copa</span></div></div>
+      <div class="f-tabs"><div class="f-tab">📝 Palpites</div><div class="f-tab on">🏆 Classificação</div></div>
+      <div class="f-body">
+        <div class="bolo"><div><div class="lab">BOLO TOTAL</div><div class="val">R$ 850</div></div><div style="text-align:right"><div class="lab">APOSTADORES</div><div class="val" style="color:#e2e4ec">17</div></div></div>
+        <div class="classif-row"><span class="pos">1</span><span class="nm">Você 😎</span><span class="pt">142</span></div>
+        <div class="classif-row"><span class="pos">2</span><span class="nm">Marcos</span><span class="pt">138</span></div>
+        <div class="classif-row"><span class="pos" style="color:#5c6378">3</span><span class="nm">Ana</span><span class="pt">131</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="rodape">Bolão Copa 2026 — manual de uso</div>
+</div>
+
+<!-- PASSO 5: PONTOS -->
+<div class="page">
+  <div class="passo"><div class="num">5</div><div class="passo-txt"><h2>Como ganha pontos</h2></div></div>
+  <p style="margin-bottom:6px">Cada jogo vale pontos conforme o seu acerto. Vale sempre o <b>maior</b> que encaixar (não soma):</p>
+  <table class="pts">
+    <tr><td>12 pts</td><td><b>Placar exato</b> — você acertou os dois números (ex.: cravou 2 a 1 e deu 2 a 1).</td></tr>
+    <tr><td>8 pts</td><td>Acertou <b>quem ganhou</b> + o placar de <b>um</b> dos times.</td></tr>
+    <tr><td>6 pts</td><td>Acertou só <b>quem ganhou</b> (nenhum número certo).</td></tr>
+    <tr><td>2 pts</td><td>Errou o vencedor, mas acertou o placar de <b>um</b> dos times.</td></tr>
+    <tr><td>0 pts</td><td>Não acertou nada.</td></tr>
+    <tr><td style="color:#b8860b !important">+20</td><td>Acertar o <b>Artilheiro</b> da Copa (uma vez só, no fim).</td></tr>
+  </table>
+  <div class="dica" style="margin-top:20px"><b>Resumindo a estratégia:</b> nos jogos fáceis (favoritão), tente <b>cravar o placar certinho</b> pra fazer 12. Nos jogos difíceis, já é lucro acertar <b>quem ganha</b>.</div>
+
+  <h2 style="margin-top:28px">Dúvidas rápidas</h2>
+  <ul>
+    <li><b>Esqueci de salvar?</b> Não existe salvar. Mexeu, já guardou.</li>
+    <li><b>Posso mudar depois?</b> Pode, até a véspera de cada jogo.</li>
+    <li><b>Perdi meu PIN.</b> Chama a organização que te manda de novo.</li>
+    <li><b>Preciso instalar algo?</b> Não. Abre no navegador do celular mesmo.</li>
+  </ul>
+  <div style="margin-top:26px; background:#0d0f14; border-radius:14px; padding:22px; text-align:center;">
+    <p style="color:#fff; font-size:18px; font-weight:800; margin-bottom:10px;">Por que choras, Excel? 😭📊🤣</p>
+    <p style="color:#e2e4ec; font-size:16px; line-height:1.5;">
+      Se você acha que tá ultrapassado 😂😂 e quer aprender como ser esperto no mundo da tecnologia, <span style="color:#00e87a; font-weight:800;">me chama!</span> 🤣📱✨
+    </p>
+  </div>
+
+  <div class="rodape">Bolão Copa 2026 — Boa sorte e que vença o melhor palpiteiro! 🏆</div>
+</div>
+
+</body>
+</html>

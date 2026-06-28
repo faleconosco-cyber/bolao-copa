@@ -12,9 +12,9 @@ interface Props {
 }
 
 // Travas personalizadas por jogo (instante exato em UTC).
-// G73 (África do Sul x Canadá): trava 28/06 às 14h de Brasília (= 17h UTC).
+// G73 (África do Sul x Canadá): trava 28/06 às 15:55 de Brasília (= 18:55 UTC).
 const TRAVAS_ESPECIAIS: Record<string, string> = {
-  G73: '2026-06-28T17:00:00Z',
+  G73: '2026-06-28T18:55:00Z',
 }
 
 export function GameCard({ game, prediction, participantId, semiLosers }: Props) {
